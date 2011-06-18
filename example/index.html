@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  
+    <title>Touchy example</title>
+
+    <style type="text/css" media="screen">
+      #eventarea { height:300px; widht:800px; background-color:#bbb; 
+    </style>
+    
+  </head>
+  <body>
+    <h1>Tap, hold (longtouch) or swipe the area below</h1>
+
+    <div id="eventarea">
+      
+    </div>
+    <div id="resultarea">
+      
+    </div>
+
+    <script src="../src/touchy.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      (function() {
+        var target = document.getElementById('eventarea'),
+            result = document.getElementById('resultarea');
+
+        function tapped() {
+          result.innerHTML = '<h3>You tapped!</h3>';
+        };
+        
+        function touched() {
+          result.innerHTML = '<h3>You touched for a long time!</h3>';
+        };
+        
+        function swipedLeft() {
+          result.innerHTML = '<h3>You swiped left</h3>';
+        };
+        
+        function swipedRight() {
+          result.innerHTML = '<h3>You swiped right</h3>';
+        };
+        
+        function swipedUp() {
+          result.innerHTML = '<h3>You swiped up</h3>';
+        };
+        
+        function swipedDown() {
+          result.innerHTML = '<h3>You swiped down</h3>';
+        };
+
+        target.addEventListener('tap', tapped);
+        target.addEventListener('longTouch', touched);
+        target.addEventListener('swipeleft', swipedLeft);
+        target.addEventListener('swiperight', swipedRight);
+        target.addEventListener('swipeup', swipedUp);
+        target.addEventListener('swipedown', swipedDown);
+      })();
+    </script>
+  </body>
+</html>
