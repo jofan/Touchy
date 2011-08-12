@@ -29,6 +29,10 @@
         function tapped() {
           result.innerHTML = '<h3>You tapped!</h3>';
         };
+
+        function doubleTapped() {
+          result.innerHTML = '<h3>You doubleTapped!</h3>';
+        };
         
         function touched() {
           result.innerHTML = '<h3>You touched for a long time!</h3>';
@@ -50,12 +54,19 @@
           result.innerHTML = '<h3>You swiped down</h3>';
         };
 
+        function dragged(e) {
+          console.log(e);
+          result.innerHTML = '<h3>You dragged!</h3>';
+        };
+
         target.addEventListener('tap', tapped);
+        target.addEventListener('doubleTap', doubleTapped);
         target.addEventListener('longTouch', touched);
         target.addEventListener('swipeleft', swipedLeft);
         target.addEventListener('swiperight', swipedRight);
         target.addEventListener('swipeup', swipedUp);
         target.addEventListener('swipedown', swipedDown);
+        target.addEventListener('drag', dragged);
       })();
     </script>
   </body>

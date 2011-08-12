@@ -3,6 +3,7 @@
 (function() {
   var d = document,
       isTouch = 'ontouchstart' in window,
+      doubleTap = false,
       touchEvents = {
         start: 'touchstart',
         move: 'touchmove',
@@ -16,13 +17,15 @@
       evts = isTouch ? touchEvents : mouseEvents,
       customEvents = {
         tap: '',
+        doubleTap: '',
         longTouch: '',
         swipeleft: '',
         swiperight: '',
         swipeup: '',
-        swipedown: ''
+        swipedown: '',
+        drag: ''
       },
-      swipeEvents = ['tap', 'longTouch', 'swipeleft', 'swiperight', 'swipeup', 'swipedown'];
+      swipeEvents = ['tap', 'doubleTap', 'longTouch', 'swipeleft', 'swiperight', 'swipeup', 'swipedown', 'drag'];
 
   function createSwipeEvents () {
     swipeEvents.forEach(function(evt) {
@@ -56,18 +59,25 @@
 
       if (!hasMoved) {
         if (timeDiff <= 500) {
-          ele.dispatchEvent(customEvents.tap);
+          if (doubleTap) {
+            ele.dispatchEvent(customEvents.doubleTap);
+          }
+          else {
+            ele.dispatchEvent(customEvents.tap);
+            doubleTap = true;
+          }
+          resetDoubleTap();
         }
         else {
           ele.dispatchEvent(customEvents.longTouch);
         }
       }
       else {
+        endX = touch.clientX;
+        endY = touch.clientY;
+        diffX = endX-startX;
+        diffY = endY-startY;
         if (timeDiff < 500) {
-          endX = touch.clientX;
-          endY = touch.clientY;
-          diffX = endX-startX;
-          diffY = endY-startY;
           dirX = diffX > 0 ? 'right' : 'left';
           dirY = diffY > 0 ? 'down' : 'up';
           absDiffX = Math.abs(diffX);
@@ -82,11 +92,17 @@
           
           ele.dispatchEvent(customEvents[customEvent]);
         }
+        else {
+          ele.dispatchEvent(customEvents['drag']);
+        }
       }
 
       d.removeEventListener(evts.move, onMove, false);
       d.removeEventListener(evts.end, onEnd, false);
     }
+  }
+  function resetDoubleTap() {
+    setTimeout(function() {doubleTap = false;}, 400);
   }
 
   createSwipeEvents();
