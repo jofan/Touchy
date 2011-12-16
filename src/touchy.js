@@ -1,4 +1,15 @@
-/* TOUCHY microlibrary */
+/**
+ * touchy.js
+ *
+ * A JavaScript microlibrary for UI interaction on Wekbit mobile and desktop.
+ * Dispatches custom events to be used when normal events does not suffice.
+ * NOTE: stopPropagation() will not work on these events, use touchy.stop(event) instead.
+ *
+ * @author     Stefan Liden
+ * @version    0.2
+ * @copyright  Copyright 2011 Stefan Liden
+ * @license    Dual licensed under MIT and GPL
+ */
 
 (function() {
   var d = document,
@@ -26,12 +37,20 @@
         swipedown: ''
       },
       swipeEvents = ['tap', 'doubleTap', 'twoFingerTap', 'longTouch', 'swipeleft', 'swiperight', 'swipeup', 'swipedown'];
-
+  
+  // Create the custom events to be dispatched
   function createSwipeEvents () {
     swipeEvents.forEach(function(evt) {
-      customEvents[evt] = document.createEvent('UIEvents');
+      customEvents[evt] = d.createEvent('UIEvents');
       customEvents[evt].initEvent(evt, true, true);
     });
+  }
+  // Fix for stopPropagation not working in Webkit and Opera for custom events
+  function stopBubbling (event) {
+    event.cancelBubble = true;
+    setTimeout(function() {
+      event.cancelBubble = false;
+    },0);
   }
   function onStart (event) {
     var startTime = new Date().getTime(),
@@ -114,8 +133,10 @@
   createSwipeEvents();
   d.addEventListener(evts.start, onStart, false);
 
+  // Return an object to access useful properties and methods
   return window.touchy = {
     isTouch: isTouch,
+    stop: stopBubbling,
     events: evts
   }
 })();
