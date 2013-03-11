@@ -28,7 +28,7 @@
         <h3 class="how-use-it">How do I use it?</h3>
         <div class="explanation">
           <p>Touchy dispatches regular JavaScript events so you listen to them like any other event.</p>
-          <p>document.addEventListener('tap', tapHandler);</p>
+          <p><code>document.addEventListener('tap', tapHandler);</code></p>
         </div>
       </div>
 
@@ -46,11 +46,43 @@
         </div>
       </div>
 
+      <h2>Events</h2>
+      <p>The following custom events are added by Touchy:</p>
+      <dl>
+        <dt><code>tap</code></dt>
+        <dd>Instead of a click (will be immediate on a touch device)</dd>
+        <dt><code>doubleTap</code></dt>
+        <dd>Instead of a doubleClick. Necessary when doubleClick has been stolen by native app</dd>
+        <dt><code>longTouch</code></dt>
+        <dd>Press and hold for more than 500ms</dd>
+        <dt><code>twoFingerTap</code></dt>
+        <dd>Tapping screen with two fingers. Only on touch devices.</dd>
+        <dt><code>swipeleft</code></dt>
+        <dd>Swiping left on screen for less than 500ms</dd>
+        <dt><code>swiperight</code></dt>
+        <dd>Swiping right on screen for less than 500ms</dd>
+        <dt><code>swipeup</code></dt>
+        <dd>Swiping up on screen for less than 500ms</dd>
+        <dt><code>swipedown</code></dt>
+        <dd>Swiping down on screen for less than 500ms</dd>
+      </dl>
+
+      <h2>API</h2>
+      <p>Touchy comes with the following API:</p>
+      <dl>
+        <dt><code>touchy.stop(event)</code></dt>
+        <dd>Instead of event.stopPropagation() which does not work in all browsers with custom events</dd>
+        <dt><code>touchy.events</code></dt>
+        <dd>Object with the current event names touchy is listening on, e.g. 'touchstart'</dd>
+        <dt><code>touchy.isTouch</code></dt>
+        <dd>True if global has 'ontouchstart'</dd>
+      </dl>
+
       <h2>Example</h2>
       <h4>Tap, hold (longtouch) or swipe the area below</h4>
 
       <div id="eventarea"></div>
-      <div id="resultarea"></div>
+      <div id="resultarea"><h3>(waiting for event)</h3></div>
 
     </div>
 
