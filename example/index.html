@@ -16,7 +16,7 @@
     <div id="eventarea"></div>
     <div id="resultarea"></div>
 
-    <script src="../src/touchy.js" type="text/javascript" charset="utf-8"></script>
+    <script src="touchy.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       (function() {
         var target = document.getElementById('eventarea'),
@@ -54,6 +54,8 @@
           console.log(e);
           result.innerHTML = '<h3>You dragged!</h3>';
         };
+
+        result.innerHTML = "<p>" + touchy.events.start + '</p>';
 
         target.addEventListener('tap', tapped);
         target.addEventListener('doubleTap', doubleTapped);

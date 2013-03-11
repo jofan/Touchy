@@ -1,14 +1,16 @@
 /**
  * touchy.js
  *
- * A JavaScript microlibrary for UI interaction on Wekbit mobile and desktop.
+ * A JavaScript microlibrary for UI interaction on mobile and desktop.
  * Dispatches custom events to be used when normal events does not suffice.
  * NOTE: stopPropagation() will not work on these events, use touchy.stop(event) instead.
  *
+ * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
+ *
  * @author     Stefan Liden
- * @version    0.2
- * @copyright  Copyright 2011 Stefan Liden
- * @license    Dual licensed under MIT and GPL
+ * @version    0.5
+ * @copyright  Copyright 2011-2013 Stefan Liden
+ * @license    MIT
  */
 
 (function() {
@@ -25,7 +27,13 @@
         move: 'mousemove',
         end: 'mouseup'
       },
-      evts = isTouch ? touchEvents : mouseEvents,
+      // http://jessefreeman.com/articles/from-webkit-to-windows-8-touch-events/
+      msPointerEvents = {
+        start: 'MSPointerDown',
+        move: 'MSPointerMove',
+        end: 'MSPointerUp'
+      },
+      evts = isTouch ? touchEvents : setEventType(),
       customEvents = {
         tap: '',
         doubleTap: '',
@@ -37,6 +45,11 @@
         swipedown: ''
       },
       swipeEvents = ['tap', 'doubleTap', 'twoFingerTap', 'longTouch', 'swipeleft', 'swiperight', 'swipeup', 'swipedown'];
+
+  // If this is not Webkit touch, is it a MS Pointer or a regular mouse device?
+  function setEventType () {
+    return window.navigator.msPointerEnabled ? msPointerEvents : mouseEvents;
+  }
   
   // Create the custom events to be dispatched
   function createSwipeEvents () {
@@ -45,13 +58,15 @@
       customEvents[evt].initEvent(evt, true, true);
     });
   }
-  // Fix for stopPropagation not working in Webkit and Opera for custom events
+
+  // Fix for stopPropagation. It's not working in Webkit and Opera for custom events
   function stopBubbling (event) {
     event.cancelBubble = true;
     setTimeout(function() {
       event.cancelBubble = false;
     },0);
   }
+
   function onStart (event) {
     var startTime = new Date().getTime(),
         touch = isTouch ? event.touches[0] : event,
@@ -65,18 +80,18 @@
     d.addEventListener(evts.move, onMove, false);
     d.addEventListener(evts.end, onEnd, false);
     
-    function onMove (event) {
+    function onMove (e) {
       hasMoved = true;
-      nrOfFingers = isTouch ? event.touches.length : 1;
+      nrOfFingers = isTouch ? e.touches.length : 1;
     }
-    function onEnd (event) {
+
+    function onEnd (e) {
       var endX, endY, diffX, diffY,
-          ele = event.target,
+          ele = e.target,
+          changed = isTouch ? e.changedTouches[0] : e,
           customEvent = '',
           endTime = new Date().getTime(),
           timeDiff = endTime - startTime;
-
-      touch = isTouch ? touch : event;
 
       if (nrOfFingers === 1) {
         if (!hasMoved) {
@@ -96,8 +111,8 @@
         }
         else {
           if (timeDiff < 500) {
-            endX = touch.clientX;
-            endY = touch.clientY;
+            endX = changed.clientX;
+            endY = changed.clientY;
             diffX = endX-startX;
             diffY = endY-startY;
             dirX = diffX > 0 ? 'right' : 'left';
@@ -139,4 +154,4 @@
     stop: stopBubbling,
     events: evts
   }
-})();
+}());
