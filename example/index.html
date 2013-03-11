@@ -5,18 +5,60 @@
   
     <title>Touchy example</title>
 
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
     <style type="text/css" media="screen">
       #eventarea { height:300px; widht:800px; background-color:#bbb; }
     </style>
     
   </head>
   <body>
-    <h1>Tap, hold (longtouch) or swipe the area below</h1>
+    <div class="content">
+      <h1>touchy.js</h1>
 
-    <div id="eventarea"></div>
-    <div id="resultarea"></div>
+      <div class="subject">
+        <h3 class="what-is-it">What is it?</h3>
+        <div class="explanation">
+          <p>A JavaScript microlibrary for UI interaction on mobile and desktop.</p>
+          <p>Dispatches custom events to be used when normal events does not suffice.</p>
+        </div>
+      </div>
 
-    <script src="touchy.js" type="text/javascript" charset="utf-8"></script>
+      <div class="subject">
+        <h3 class="how-use-it">How do I use it?</h3>
+        <div class="explanation">
+          <p>Touchy dispatches regular JavaScript events so you listen to them like any other event.</p>
+          <p>document.addEventListener('tap', tapHandler);</p>
+        </div>
+      </div>
+
+      <div class="subject">
+        <h3 class="where-use-it">Where can I use it?</h3>
+        <div class="explanation">
+          <img src="img/browser_logos-64.png" class="browsers" alt="Chrome, Firefox, Opera, Safari, Internet Explorer" />
+          <ul class="browser-versions">
+            <li>17+</li>
+            <li>9+</li>
+            <li>?</li>
+            <li>5+</li>
+            <li>9+</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>Example</h2>
+      <h4>Tap, hold (longtouch) or swipe the area below</h4>
+
+      <div id="eventarea"></div>
+      <div id="resultarea"></div>
+
+    </div>
+
+    <a href="https://github.com/jofan/touchy">
+      <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+    <script src="../src/touchy.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       (function() {
         var target = document.getElementById('eventarea'),
@@ -54,8 +96,6 @@
           console.log(e);
           result.innerHTML = '<h3>You dragged!</h3>';
         };
-
-        result.innerHTML = "<p>" + touchy.events.start + '</p>';
 
         target.addEventListener('tap', tapped);
         target.addEventListener('doubleTap', doubleTapped);
