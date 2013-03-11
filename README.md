@@ -5,6 +5,9 @@ ___NOTE: stopPropagation() will not work on these events, use touchy.stop(event)
 
 touchy.js has no dependencies.
 
+## Docs
+See [Touchy documentation and example](http://jofan.github.com/Touchy/)
+
 ##License
 (The MIT License)
 
