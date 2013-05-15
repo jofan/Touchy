@@ -5,6 +5,14 @@ ___NOTE: stopPropagation() will not work on these events, use touchy.stop(event)
 
 touchy.js has no dependencies.
 
+## Component and standalone versions
+It's possible to use Touchy as a stand-alone library (src/touchy.js) or as a component.
+
+To install as a component:
+```
+  component install jofan/touchy
+```
+
 ## Docs
 See [Touchy documentation and example](http://jofan.github.com/Touchy/)
 
