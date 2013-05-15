@@ -1,0 +1,19 @@
+{
+  "name": "touchy",
+  "repo": "jofan/Touchy",
+  "description": "Provide custom events for touch interfaces.",
+  "version": "0.9.0",
+  "keywords": [
+    "html",
+    "library",
+    "touch",
+    "events"
+  ],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "lib/touchy.js",
+  "scripts": [
+    "lib/touchy.js"
+  ]
+}
