@@ -33,38 +33,19 @@
         move: 'MSPointerMove',
         end: 'MSPointerUp'
       },
-      evts = isTouch ? touchEvents : setEventType(),
-      customEvents = {
-        tap: '',
-        doubleTap: '',
-        twoFingerTap: '',
-        longTouch: '',
-        swipeleft: '',
-        swiperight: '',
-        swipeup: '',
-        swipedown: ''
-      },
-      swipeEvents = ['tap', 'doubleTap', 'twoFingerTap', 'longTouch', 'swipeleft', 'swiperight', 'swipeup', 'swipedown'];
+      evts = isTouch ? touchEvents : setEventType();
 
   // If this is not Webkit touch, is it a MS Pointer or a regular mouse device?
   function setEventType () {
     return window.navigator.msPointerEnabled ? msPointerEvents : mouseEvents;
   }
-  
-  // Create the custom events to be dispatched
-  function createSwipeEvents () {
-    swipeEvents.forEach(function(evt) {
-      customEvents[evt] = d.createEvent('UIEvents');
-      customEvents[evt].initEvent(evt, true, true);
-    });
-  }
 
-  // Fix for stopPropagation. It's not working in Webkit and Opera for custom events
-  function stopBubbling (event) {
-    event.cancelBubble = true;
-    setTimeout(function() {
-      event.cancelBubble = false;
-    },0);
+  // Dispatch new event
+  function dispatchEvent (target, event) {
+    var evt = d.createEvent('UIEvents');
+
+    evt.initEvent(event, true, true);
+    target.dispatchEvent(evt);
   }
 
   function onStart (event) {
@@ -79,7 +60,7 @@
 
     d.addEventListener(evts.move, onMove, false);
     d.addEventListener(evts.end, onEnd, false);
-    
+
     function onMove (e) {
       hasMoved = true;
       nrOfFingers = isTouch ? e.touches.length : 1;
@@ -97,16 +78,16 @@
         if (!hasMoved) {
           if (timeDiff <= 500) {
             if (doubleTap) {
-              ele.dispatchEvent(customEvents.doubleTap);
+              dispatchEvent(ele, 'doubleTap');
             }
             else {
-              ele.dispatchEvent(customEvents.tap);
+              dispatchEvent(ele, 'tap');
               doubleTap = true;
             }
             resetDoubleTap();
           }
           else {
-            ele.dispatchEvent(customEvents.longTouch);
+            dispatchEvent(ele, 'longTouch');
           }
         }
         else {
@@ -119,39 +100,37 @@
             dirY = diffY > 0 ? 'down' : 'up';
             absDiffX = Math.abs(diffX);
             absDiffY = Math.abs(diffY);
-            
+
             if (absDiffX >= absDiffY) {
               customEvent = 'swipe' + dirX;
             }
             else {
               customEvent = 'swipe' + dirY;
             }
-            
-            ele.dispatchEvent(customEvents[customEvent]);
+
+            dispatchEvent(ele, customEvent);
           }
         }
       }
       else if (nrOfFingers === 2) {
-        ele.dispatchEvent(customEvents.twoFingerTap);
+        dispatchEvent(ele, 'twoFingerTap');
       }
 
       d.removeEventListener(evts.move, onMove, false);
       d.removeEventListener(evts.end, onEnd, false);
     }
   }
-  
+
   function resetDoubleTap() {
     setTimeout(function() {doubleTap = false;}, 400);
   }
-  
 
-  createSwipeEvents();
+
   d.addEventListener(evts.start, onStart, false);
 
   // Return an object to access useful properties and methods
   return window.touchy = {
     isTouch: isTouch,
-    stop: stopBubbling,
     events: evts
   }
 }());
