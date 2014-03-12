@@ -1,7 +1,8 @@
 #Touchy
 A JavaScript microlibrary for UI interaction on mobile and desktop.
 Dispatches custom events to be used when normal events does not suffice.
-___NOTE: stopPropagation() will not work on these events, use touchy.stop(event) instead.___
+
+___NOTE (version <= 0.9): stopPropagation() will not work on these events, use touchy.stop(event) instead.___
 
 touchy.js has no dependencies.
 
