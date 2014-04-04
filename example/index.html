@@ -96,7 +96,9 @@
         var target = document.getElementById('eventarea'),
             result = document.getElementById('resultarea');
 
-        function tapped() {
+        function tapped(e) {
+          e.stopPropagation();
+          // touchy.stop(e);
           result.innerHTML = '<h3>You tapped!</h3>';
         };
 
@@ -128,6 +130,12 @@
           console.log(e);
           result.innerHTML = '<h3>You dragged!</h3>';
         };
+        
+        function noCall(e) {
+          result.innerHTML = '<h3>Document was tapped</h3>';
+        };
+        
+        document.addEventListener('tap', noCall);
 
         target.addEventListener('tap', tapped);
         target.addEventListener('doubleTap', doubleTapped);
