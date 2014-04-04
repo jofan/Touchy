@@ -1,0 +1,31 @@
+{
+  "name": "Touchy",
+  "version": "1.0.0",
+  "homepage": "https://github.com/jofan/Touchy",
+  "authors": [
+    "Stefan Liden <stefan.liden@gmail.com>"
+  ],
+  "description": "Dispatches custom UI events to be used when normal events don't suffice.",
+  "main": "dist/touchy.js",
+  "moduleType": [
+    "amd",
+    "node",
+    "globals"
+  ],
+  "keywords": [
+    "library",
+    "touch",
+    "events",
+    "touchy",
+    "util"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "example"
+  ]
+}

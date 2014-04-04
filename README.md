@@ -6,12 +6,22 @@ ___NOTE (version <= 0.9): stopPropagation() will not work on these events, use t
 
 touchy.js has no dependencies.
 
-## Component and standalone versions
-It's possible to use Touchy as a stand-alone library (src/touchy.js) or as a component.
+## Install
 
-To install as a component:
+### Component
 ```
   component install jofan/touchy
+```
+
+### Bower
+```
+  bower install Touchy
+```
+
+### File reference (UMD)
+Clone/download the `dist/touchy.js` (or the minified version) and reference in your project.
+```
+  <script src="lib/touchy.js"></script>
 ```
 
 ## Docs

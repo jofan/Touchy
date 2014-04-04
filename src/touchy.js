@@ -12,7 +12,8 @@
  * @license    MIT
  */
 
-(function() {
+module.exports = touchy;
+
   var d = document,
       touchy,
       isTouch = 'ontouchstart' in window,
@@ -34,20 +35,20 @@
         end: 'MSPointerUp'
       },
       evts = isTouch ? touchEvents : setEventType();
-  
+
   // If this is not touch, is it a MS Pointer or a regular mouse device?
   function setEventType () {
     return window.navigator.msPointerEnabled ? msPointerEvents : mouseEvents;
   }
-  
+
   // Dispatch new event
   function dispatchEvent (target, event) {
     var evt = d.createEvent('UIEvents');
-  
+
     evt.initEvent(event, true, true);
     target.dispatchEvent(evt);
   }
-  
+
   function onStart (event) {
     var startTime = new Date().getTime(),
         touch = isTouch ? event.touches[0] : event,
@@ -59,19 +60,19 @@
     
     // See blog.msdn.com/b/ie/20111/10/19/handling-multi-touch-and-mouse-input-in-all-browsers.aspx
     if (typeof event.target.style.msTouchAction !== 'undefined') event.target.style.msTouchAction = 'none';
-  
+
     startX = touch.clientX;
     startY = touch.clientY;
     hasMoved = false;
-  
+
     d.addEventListener(evts.move, onMove, false);
     d.addEventListener(evts.end, onEnd, false);
-  
+
     function onMove (e) {
       hasMoved = true;
       nrOfFingers = isTouch ? e.touches.length : 1;
     }
-  
+
     function onEnd (e) {
       var endX, endY, diffX, diffY,
           ele = e.target,
@@ -91,7 +92,7 @@
           hasMoved = false;
         }
       }
-  
+
       if (nrOfFingers === 1) {
         if (!hasMoved) {
           if (timeDiff <= 500) {
@@ -118,14 +119,14 @@
             dirY = diffY > 0 ? 'down' : 'up';
             absDiffX = Math.abs(diffX);
             absDiffY = Math.abs(diffY);
-  
+
             if (absDiffX >= absDiffY) {
               swipeEvent += dirX;
             }
             else {
               swipeEvent += dirY;
             }
-  
+
             dispatchEvent(ele, swipeEvent);
           }
         }
@@ -136,12 +137,12 @@
       else if (nrOfFingers === 3) {
         dispatchEvent(ele, 'threeFingerTap');
       }
-  
+
       d.removeEventListener(evts.move, onMove, false);
       d.removeEventListener(evts.end, onEnd, false);
     }
   }
-  
+
   function resetDoubleTap() {
     setTimeout(function() {doubleTap = false;}, 400);
   }
@@ -155,13 +156,12 @@
     },0);
     if (window.console && window.console.warning) console.warning("touchy.stop is deprecated. Please use event.stopPropagation instead.");
   }
-  
+
   d.addEventListener(evts.start, onStart, false);
-  
+
   // Return an object to access useful properties and methods
-  return window.touchy = {
+  touchy = {
     isTouch: isTouch,
     stop: stopBubbling,
     events: evts
   }
-}());

@@ -13,8 +13,8 @@
   "dependencies": {},
   "development": {},
   "license": "MIT",
-  "main": "lib/touchy.js",
+  "main": "src/touchy.js",
   "scripts": [
-    "lib/touchy.js"
+    "src/touchy.js"
   ]
 }
