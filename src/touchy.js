@@ -12,8 +12,6 @@
  * @license    MIT
  */
 
-module.exports = touchy;
-
   var d = document,
       touchy,
       isTouch = 'ontouchstart' in window,
@@ -160,8 +158,8 @@ module.exports = touchy;
   d.addEventListener(evts.start, onStart, false);
 
   // Return an object to access useful properties and methods
-  touchy = {
+  module.exports = touchy = {
     isTouch: isTouch,
     stop: stopBubbling,
     events: evts
-  }
+  };
