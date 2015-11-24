@@ -66,15 +66,14 @@ require.register("touchy", function (exports, module) {
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.0.0
- * @copyright  Copyright 2011-2014 Stefan Liden
+ * @version    1.2.0
+ * @copyright  Copyright 2011-2015 Stefan Liden
  * @license    MIT
  */
 
 module.exports = touchy;
 
   var d = document,
-      touchy,
       isTouch = 'ontouchstart' in window,
       doubleTap = false,
       touchEvents = {
@@ -93,10 +92,17 @@ module.exports = touchy;
         move: 'MSPointerMove',
         end: 'MSPointerUp'
       },
+      // https://coderwall.com/p/mfreca/ie-11-in-windows-8-1-pointer-events-changes
+      msIEElevenPointerEvents = {
+        start: 'pointerdown',
+        move: 'pointermove',
+        end: 'pointerup'
+      },
       evts = isTouch ? touchEvents : setEventType();
 
   // If this is not touch, is it a MS Pointer or a regular mouse device?
   function setEventType () {
+    if(window.navigator.pointerEnabled) return msIEElevenPointerEvents;
     return window.navigator.msPointerEnabled ? msPointerEvents : mouseEvents;
   }
 
@@ -112,7 +118,8 @@ module.exports = touchy;
     var startTime = new Date().getTime(),
         touch = isTouch ? event.touches[0] : event,
         nrOfFingers = isTouch ? event.touches.length : 1,
-        startX, startY, hasMoved;
+        startX, startY;
+    var hasMoved = false;
         
     // Prevent panning and zooming (IE)
     if (event.preventManipulation) event.preventManipulation();
@@ -122,18 +129,19 @@ module.exports = touchy;
 
     startX = touch.clientX;
     startY = touch.clientY;
-    hasMoved = false;
 
     d.addEventListener(evts.move, onMove, false);
     d.addEventListener(evts.end, onEnd, false);
 
     function onMove (e) {
-      hasMoved = true;
-      nrOfFingers = isTouch ? e.touches.length : 1;
+      if (!hasMoved) {
+        hasMoved = true;
+        nrOfFingers = isTouch ? e.touches.length : 1;
+      }
     }
 
     function onEnd (e) {
-      var endX, endY, diffX, diffY,
+      var endX, endY, diffX, diffY, dirX, dirY, absDiffX, absDiffY,
           ele = e.target,
           changed = isTouch ? e.changedTouches[0] : e,
           swipeEvent = 'swipe',
@@ -169,7 +177,7 @@ module.exports = touchy;
           }
         }
         else {
-          if (timeDiff < 500) {
+          if (timeDiff < 300) {
             endX = endX || changed.clientX;
             endY = endY || changed.clientY;
             diffX = diffX || endX-startX;
@@ -178,23 +186,38 @@ module.exports = touchy;
             dirY = diffY > 0 ? 'down' : 'up';
             absDiffX = Math.abs(diffX);
             absDiffY = Math.abs(diffY);
-
-            if (absDiffX >= absDiffY) {
-              swipeEvent += dirX;
+            
+            // If moving finger far, it's not a swipe
+            if (absDiffX < 40 || absDiffY < 40) {
+              if (absDiffX >= absDiffY) {
+                swipeEvent += dirX;
+              }
+              else {
+                swipeEvent += dirY;
+              }
+            
+              dispatchEvent(ele, swipeEvent);
             }
-            else {
-              swipeEvent += dirY;
-            }
-
-            dispatchEvent(ele, swipeEvent);
+          }
+          else {
+            dispatchEvent(ele, 'drop');
           }
         }
       }
-      else if (nrOfFingers === 2) {
-        dispatchEvent(ele, 'twoFingerTap');
+      else if (!hasMoved) {
+        if (nrOfFingers === 2) {
+          dispatchEvent(ele, 'twoFingerTap');
+        }
+        else if (nrOfFingers === 3) {
+          dispatchEvent(ele, 'threeFingerTap');
+        }
+        else if (nrOfFingers === 4) {
+          dispatchEvent(ele, 'fourFingerTap');
+        }
       }
-      else if (nrOfFingers === 3) {
-        dispatchEvent(ele, 'threeFingerTap');
+      // Event indicating gesture. Use hammer.js for gesture events
+      else {
+        dispatchEvent(ele, 'gesture');
       }
 
       d.removeEventListener(evts.move, onMove, false);
@@ -205,23 +228,12 @@ module.exports = touchy;
   function resetDoubleTap() {
     setTimeout(function() {doubleTap = false;}, 400);
   }
-  
-  // Previous fix for stopPropagation. 
-  // DEPRECATED - Use "event.stopPropagation()" instead
-  function stopBubbling (event) {
-    event.cancelBubble = true;
-    setTimeout(function() {
-      event.cancelBubble = false;
-    },0);
-    if (window.console && window.console.warning) console.warning("touchy.stop is deprecated. Please use event.stopPropagation instead.");
-  }
 
   d.addEventListener(evts.start, onStart, false);
 
   // Return an object to access useful properties and methods
-  touchy = {
+  window.touchy = {
     isTouch: isTouch,
-    stop: stopBubbling,
     events: evts
   }
 });
