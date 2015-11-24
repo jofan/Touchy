@@ -230,10 +230,16 @@ module.exports = touchy;
   }
 
   d.addEventListener(evts.start, onStart, false);
+  
+  // Deprecated.
+  function stop(e) {
+    e.stopPropagation();
+  }
 
   // Return an object to access useful properties and methods
   window.touchy = {
     isTouch: isTouch,
+    stop: stop,
     events: evts
   }
 });

@@ -7,7 +7,7 @@
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.2.0
+ * @version    1.2.1
  * @copyright  Copyright 2011-2015 Stefan Liden
  * @license    MIT
  */
@@ -171,10 +171,16 @@
   }
 
   d.addEventListener(evts.start, onStart, false);
+  
+  // Deprecated.
+  function stop(e) {
+    e.stopPropagation();
+  }
 
   // Return an object to access useful properties and methods
   window.touchy = {
     isTouch: isTouch,
+    stop: stop,
     events: evts
   };
 }());
