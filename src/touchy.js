@@ -7,8 +7,8 @@
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.2.1
- * @copyright  Copyright 2011-2015 Stefan Liden
+ * @version    1.3.0
+ * @copyright  Copyright 2011-2016 Stefan Liden
  * @license    MIT
  */
 
@@ -48,11 +48,24 @@
   }
 
   // Dispatch new event
-  function dispatchEvent (target, event) {
-    var evt = d.createEvent('UIEvents');
+    function dispatchEvent (target, eventName, event) {
+        var evt;
+        // Modern browsers
+        if (window.CustomEvent) {
+            evt = new CustomEvent(eventName, {
+                'detail': {
+                    'clientX': event.clientX,
+                    'clientY': event.clientY
+                }
+            });
+        }
+        // Old browsers
+        else {
+            evt = d.createEvent('MouseEvent');
+            evt.initEvent(eventName, true, true);
+        }
 
-    evt.initEvent(event, true, true);
-    target.dispatchEvent(evt);
+        target.dispatchEvent(evt);
   }
 
   function onStart (event) {
@@ -79,6 +92,7 @@
         hasMoved = true;
         nrOfFingers = isTouch ? e.touches.length : 1;
       }
+      dispatchEvent(e.target, 'drag', e);
     }
 
     function onEnd (e) {
@@ -105,16 +119,16 @@
         if (!hasMoved) {
           if (timeDiff <= 500) {
             if (doubleTap) {
-              dispatchEvent(ele, 'doubleTap');
+                dispatchEvent(ele, 'doubleTap', e);
             }
             else {
-              dispatchEvent(ele, 'tap');
+                dispatchEvent(ele, 'tap', e);
               doubleTap = true;
             }
             resetDoubleTap();
           }
           else {
-            dispatchEvent(ele, 'longTouch');
+              dispatchEvent(ele, 'longTouch', e);
           }
         }
         else {
@@ -137,28 +151,28 @@
                 swipeEvent += dirY;
               }
             
-              dispatchEvent(ele, swipeEvent);
+                dispatchEvent(ele, swipeEvent, e);
             }
           }
           else {
-            dispatchEvent(ele, 'drop');
+              dispatchEvent(ele, 'drop', e);
           }
         }
       }
       else if (!hasMoved) {
         if (nrOfFingers === 2) {
-          dispatchEvent(ele, 'twoFingerTap');
+            dispatchEvent(ele, 'twoFingerTap', e);
         }
         else if (nrOfFingers === 3) {
-          dispatchEvent(ele, 'threeFingerTap');
+            dispatchEvent(ele, 'threeFingerTap', e);
         }
         else if (nrOfFingers === 4) {
-          dispatchEvent(ele, 'fourFingerTap');
+            dispatchEvent(ele, 'fourFingerTap', e);
         }
       }
       // Event indicating gesture. Use hammer.js for gesture events
       else {
-        dispatchEvent(ele, 'gesture');
+          dispatchEvent(ele, 'gesture', e);
       }
 
       d.removeEventListener(evts.move, onMove, false);

@@ -46,6 +46,8 @@
         </div>
       </div>
 
+      <p>Note that in modern browsers (supporting window.CustomEvent) the dispatched event will have a "detail" property with "clientX" and "clientY" values.</p>
+
       <h2>Events</h2>
       <p>The following custom events are added by Touchy:</p>
       <dl>
@@ -57,6 +59,10 @@
         <dd>Press and hold for more than 500ms</dd>
         <dt><code>twoFingerTap</code></dt>
         <dd>Tapping screen with two fingers. Only on touch devices.</dd>
+        <dt><code>threeFingerTap</code></dt>
+        <dd>Tapping screen with three fingers. Only on touch devices.</dd>
+        <dt><code>fourFingerTap</code></dt>
+        <dd>Tapping screen with four fingers. Only on touch devices.</dd>
         <dt><code>swipeleft</code></dt>
         <dd>Swiping left on screen for less than 500ms</dd>
         <dt><code>swiperight</code></dt>
@@ -65,21 +71,23 @@
         <dd>Swiping up on screen for less than 500ms</dd>
         <dt><code>swipedown</code></dt>
         <dd>Swiping down on screen for less than 500ms</dd>
+        <dt><code>drag</code></dt>
+        <dd>When dragging mouse or finger on screen</dd>
       </dl>
 
       <h2>API</h2>
       <p>Touchy comes with the following API:</p>
       <dl>
-        <dt><code>touchy.stop(event)</code></dt>
-        <dd>Instead of event.stopPropagation() which does not work in all browsers with custom events</dd>
         <dt><code>touchy.events</code></dt>
         <dd>Object with the current event names touchy is listening on, e.g. 'touchstart'</dd>
         <dt><code>touchy.isTouch</code></dt>
         <dd>True if global has 'ontouchstart'</dd>
+        <dt><code>touchy.stop(event)</code></dt>
+        <dd>DEPRECATED. Use event.stopPropagation() as normal</dd>
       </dl>
 
       <h2>Example</h2>
-      <h4>Tap, hold (longtouch) or swipe the area below</h4>
+      <h4>Tap, hold (longtouch), drag or swipe the area below</h4>
 
       <div id="eventarea"></div>
       <div id="resultarea"><h3>(waiting for event)</h3></div>
@@ -90,7 +98,7 @@
       <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
     </a>
 
-    <script src="../dist/touchy.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../src/touchy.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       (function() {
         var target = document.getElementById('eventarea'),
@@ -127,7 +135,7 @@
         };
 
         function dragged(e) {
-          console.log(e);
+          console.log(e.detail.clientX, e.detail.clientY);
           result.innerHTML = '<h3>You dragged!</h3>';
         };
         
