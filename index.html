@@ -1,143 +1,159 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  
-    <title>Touchy example</title>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        
+        <title>Touchy example</title>
 
-    <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="styles.css">
 
-    <style type="text/css" media="screen">
-      #eventarea { height:300px; widht:800px; background-color:#bbb; }
-    </style>
-    
-  </head>
-  <body>
-    <div class="content">
-      <h1>touchy.js</h1>
+        <style type="text/css" media="screen">
+         #eventarea { height:300px; widht:800px; background-color:#bbb; }
+        </style>
+        
+    </head>
+    <body>
+        <div class="content">
+            <h1>touchy.js</h1>
 
-      <div class="subject">
-        <h3 class="what-is-it">What is it?</h3>
-        <div class="explanation">
-          <p>A JavaScript microlibrary for UI interaction on mobile and desktop.</p>
-          <p>Dispatches custom events to be used when normal events does not suffice.</p>
+            <div class="subject">
+                <h3 class="what-is-it">What is it?</h3>
+                <div class="explanation">
+                    <p>A JavaScript microlibrary for UI interaction on mobile and desktop.</p>
+                    <p>Dispatches custom events to be used when normal events does not suffice.</p>
+                </div>
+            </div>
+
+            <div class="subject">
+                <h3 class="how-use-it">How do I use it?</h3>
+                <div class="explanation">
+                    <p>Touchy dispatches regular JavaScript events so you listen to them like any other event.</p>
+                    <p><code>document.addEventListener('tap', tapHandler);</code></p>
+                </div>
+            </div>
+
+            <div class="subject">
+                <h3 class="where-use-it">Where can I use it?</h3>
+                <div class="explanation">
+                    <img src="img/browser_logos-64.png" class="browsers" alt="Chrome, Firefox, Opera, Safari, Internet Explorer" />
+                    <ul class="browser-versions">
+                        <li>17+</li>
+                        <li>9+</li>
+                        <li>?</li>
+                        <li>5+</li>
+                        <li>9+</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p>Note that in modern browsers (supporting window.CustomEvent) the dispatched event will have a "detail" property with "clientX" and "clientY" values.</p>
+
+            <h2>Events</h2>
+            <p>The following custom events are added by Touchy:</p>
+            <dl>
+                <dt><code>tap</code></dt>
+                <dd>Instead of a click (will be immediate on a touch device)</dd>
+                <dt><code>doubleTap</code></dt>
+                <dd>Instead of a doubleClick. Necessary when doubleClick has been stolen by native app</dd>
+                <dt><code>longTouch</code></dt>
+                <dd>Press and hold for more than 500ms</dd>
+                <dt><code>twoFingerTap</code></dt>
+                <dd>Tapping screen with two fingers. Only on touch devices.</dd>
+                <dt><code>threeFingerTap</code></dt>
+                <dd>Tapping screen with three fingers. Only on touch devices.</dd>
+                <dt><code>fourFingerTap</code></dt>
+                <dd>Tapping screen with four fingers. Only on touch devices.</dd>
+                <dt><code>swipeleft</code></dt>
+                <dd>Swiping left on screen for less than 500ms</dd>
+                <dt><code>swiperight</code></dt>
+                <dd>Swiping right on screen for less than 500ms</dd>
+                <dt><code>swipeup</code></dt>
+                <dd>Swiping up on screen for less than 500ms</dd>
+                <dt><code>swipedown</code></dt>
+                <dd>Swiping down on screen for less than 500ms</dd>
+                <dt><code>drag</code></dt>
+                <dd>When dragging mouse or finger on screen</dd>
+            </dl>
+
+            <h2>API</h2>
+            <p>Touchy comes with the following API:</p>
+            <dl>
+                <dt><code>touchy.events</code></dt>
+                <dd>Object with the current event names touchy is listening on, e.g. 'touchstart'</dd>
+                <dt><code>touchy.isTouch</code></dt>
+                <dd>True if global has 'ontouchstart'</dd>
+                <dt><code>touchy.stop(event)</code></dt>
+                <dd>DEPRECATED. Use event.stopPropagation() as normal</dd>
+            </dl>
+
+            <h2>Example</h2>
+            <h4>Tap, hold (longtouch), drag or swipe the area below</h4>
+
+            <div id="eventarea"></div>
+            <div id="resultarea"><h3>(waiting for event)</h3></div>
+
         </div>
-      </div>
 
-      <div class="subject">
-        <h3 class="how-use-it">How do I use it?</h3>
-        <div class="explanation">
-          <p>Touchy dispatches regular JavaScript events so you listen to them like any other event.</p>
-          <p><code>document.addEventListener('tap', tapHandler);</code></p>
-        </div>
-      </div>
+        <a href="https://github.com/jofan/touchy">
+            <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+        </a>
 
-      <div class="subject">
-        <h3 class="where-use-it">Where can I use it?</h3>
-        <div class="explanation">
-          <img src="img/browser_logos-64.png" class="browsers" alt="Chrome, Firefox, Opera, Safari, Internet Explorer" />
-          <ul class="browser-versions">
-            <li>17+</li>
-            <li>9+</li>
-            <li>?</li>
-            <li>5+</li>
-            <li>9+</li>
-          </ul>
-        </div>
-      </div>
+        <script src="../src/touchy.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+         (function() {
+             var target = document.getElementById('eventarea'),
+                 result = document.getElementById('resultarea');
 
-      <h2>Events</h2>
-      <p>The following custom events are added by Touchy:</p>
-      <dl>
-        <dt><code>tap</code></dt>
-        <dd>Instead of a click (will be immediate on a touch device)</dd>
-        <dt><code>doubleTap</code></dt>
-        <dd>Instead of a doubleClick. Necessary when doubleClick has been stolen by native app</dd>
-        <dt><code>longTouch</code></dt>
-        <dd>Press and hold for more than 500ms</dd>
-        <dt><code>twoFingerTap</code></dt>
-        <dd>Tapping screen with two fingers. Only on touch devices.</dd>
-        <dt><code>swipeleft</code></dt>
-        <dd>Swiping left on screen for less than 500ms</dd>
-        <dt><code>swiperight</code></dt>
-        <dd>Swiping right on screen for less than 500ms</dd>
-        <dt><code>swipeup</code></dt>
-        <dd>Swiping up on screen for less than 500ms</dd>
-        <dt><code>swipedown</code></dt>
-        <dd>Swiping down on screen for less than 500ms</dd>
-      </dl>
+             function tapped(e) {
+                 e.stopPropagation();
+                 // touchy.stop(e);
+                 result.innerHTML = '<h3>You tapped!</h3>';
+             };
 
-      <h2>API</h2>
-      <p>Touchy comes with the following API:</p>
-      <dl>
-        <dt><code>touchy.stop(event)</code></dt>
-        <dd>Instead of event.stopPropagation() which does not work in all browsers with custom events</dd>
-        <dt><code>touchy.events</code></dt>
-        <dd>Object with the current event names touchy is listening on, e.g. 'touchstart'</dd>
-        <dt><code>touchy.isTouch</code></dt>
-        <dd>True if global has 'ontouchstart'</dd>
-      </dl>
+             function doubleTapped() {
+                 result.innerHTML = '<h3>You doubleTapped!</h3>';
+             };
+             
+             function touched() {
+                 result.innerHTML = '<h3>You touched for a long time!</h3>';
+             };
+             
+             function swipedLeft() {
+                 result.innerHTML = '<h3>You swiped left</h3>';
+             };
+             
+             function swipedRight() {
+                 result.innerHTML = '<h3>You swiped right</h3>';
+             };
+             
+             function swipedUp() {
+                 result.innerHTML = '<h3>You swiped up</h3>';
+             };
+             
+             function swipedDown() {
+                 result.innerHTML = '<h3>You swiped down</h3>';
+             };
 
-      <h2>Example</h2>
-      <h4>Tap, hold (longtouch) or swipe the area below</h4>
+             function dragged(e) {
+                 console.log(e.detail.clientX, e.detail.clientY);
+                 result.innerHTML = '<h3>You dragged!</h3>';
+             };
+             
+             function noCall(e) {
+                 result.innerHTML = '<h3>Document was tapped</h3>';
+             };
+             
+             document.addEventListener('tap', noCall);
 
-      <div id="eventarea"></div>
-      <div id="resultarea"><h3>(waiting for event)</h3></div>
-
-    </div>
-
-    <a href="https://github.com/jofan/touchy">
-      <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
-    </a>
-
-    <script src="touchy.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" charset="utf-8">
-      (function() {
-        var target = document.getElementById('eventarea'),
-            result = document.getElementById('resultarea');
-
-        function tapped() {
-          result.innerHTML = '<h3>You tapped!</h3>';
-        };
-
-        function doubleTapped() {
-          result.innerHTML = '<h3>You doubleTapped!</h3>';
-        };
-        
-        function touched() {
-          result.innerHTML = '<h3>You touched for a long time!</h3>';
-        };
-        
-        function swipedLeft() {
-          result.innerHTML = '<h3>You swiped left</h3>';
-        };
-        
-        function swipedRight() {
-          result.innerHTML = '<h3>You swiped right</h3>';
-        };
-        
-        function swipedUp() {
-          result.innerHTML = '<h3>You swiped up</h3>';
-        };
-        
-        function swipedDown() {
-          result.innerHTML = '<h3>You swiped down</h3>';
-        };
-
-        function dragged(e) {
-          console.log(e);
-          result.innerHTML = '<h3>You dragged!</h3>';
-        };
-
-        target.addEventListener('tap', tapped);
-        target.addEventListener('doubleTap', doubleTapped);
-        target.addEventListener('longTouch', touched);
-        target.addEventListener('swipeleft', swipedLeft);
-        target.addEventListener('swiperight', swipedRight);
-        target.addEventListener('swipeup', swipedUp);
-        target.addEventListener('swipedown', swipedDown);
-        target.addEventListener('drag', dragged);
-      })();
-    </script>
-  </body>
+             target.addEventListener('tap', tapped);
+             target.addEventListener('doubleTap', doubleTapped);
+             target.addEventListener('longTouch', touched);
+             target.addEventListener('swipeleft', swipedLeft);
+             target.addEventListener('swiperight', swipedRight);
+             target.addEventListener('swipeup', swipedUp);
+             target.addEventListener('swipedown', swipedDown);
+             target.addEventListener('drag', dragged);
+         })();
+        </script>
+    </body>
 </html>
