@@ -56,11 +56,11 @@ require.helper.semVerSort = function(a, b) {
 
 /**
  * Find and require a module which name starts with the provided name.
- * If multiple modules exists, the highest semver is used. 
+ * If multiple modules exists, the highest semver is used.
  * This function can only be used for remote dependencies.
 
  * @param {String} name - module name: `user~repo`
- * @param {Boolean} returnPath - returns the canonical require path if true, 
+ * @param {Boolean} returnPath - returns the canonical require path if true,
  *                               otherwise it returns the epxorted module
  */
 require.latest = function (name, returnPath) {
@@ -83,7 +83,7 @@ require.latest = function (name, returnPath) {
           semVerCandidates.push({version: version, name: moduleName});
         } else {
           otherCandidates.push({version: version, name: moduleName});
-        } 
+        }
     }
   }
   if (semVerCandidates.concat(otherCandidates).length === 0) {
@@ -148,7 +148,7 @@ require.register("touchy", function (exports, module) {
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.3.0
+ * @version    1.3.1
  * @copyright  Copyright 2011-2016 Stefan Liden
  * @license    MIT
  */
@@ -197,7 +197,9 @@ require.register("touchy", function (exports, module) {
                 'detail': {
                     'clientX': event.clientX,
                     'clientY': event.clientY
-                }
+                },
+                cancelable: true,
+                bubbles: true
             });
         }
         // Old browsers
@@ -215,10 +217,10 @@ require.register("touchy", function (exports, module) {
         nrOfFingers = isTouch ? event.touches.length : 1,
         startX, startY;
     var hasMoved = false;
-        
+
     // Prevent panning and zooming (IE)
     if (event.preventManipulation) event.preventManipulation();
-    
+
     // See blog.msdn.com/b/ie/20111/10/19/handling-multi-touch-and-mouse-input-in-all-browsers.aspx
     if (typeof event.target.style.msTouchAction !== 'undefined') event.target.style.msTouchAction = 'none';
 
@@ -243,7 +245,7 @@ require.register("touchy", function (exports, module) {
           swipeEvent = 'swipe',
           endTime = new Date().getTime(),
           timeDiff = endTime - startTime;
-          
+
       // Fix for IE always triggering onMove and not to count very small moves
       if (hasMoved) {
         endX = changed.clientX;
@@ -282,7 +284,7 @@ require.register("touchy", function (exports, module) {
             dirY = diffY > 0 ? 'down' : 'up';
             absDiffX = Math.abs(diffX);
             absDiffY = Math.abs(diffY);
-            
+
             // If moving finger far, it's not a swipe
             if (absDiffX < 40 || absDiffY < 40) {
               if (absDiffX >= absDiffY) {
@@ -291,7 +293,7 @@ require.register("touchy", function (exports, module) {
               else {
                 swipeEvent += dirY;
               }
-            
+
                 dispatchEvent(ele, swipeEvent, e);
             }
           }
@@ -326,10 +328,12 @@ require.register("touchy", function (exports, module) {
   }
 
   d.addEventListener(evts.start, onStart, false);
-  
+
   // Deprecated.
   function stop(e) {
-    e.stopPropagation();
+    if (e && e.bubbles) {
+      e.stopPropagation();
+    }
   }
 
   // Return an object to access useful properties and methods

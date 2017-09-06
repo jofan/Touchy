@@ -7,7 +7,7 @@
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.3.0
+ * @version    1.3.1
  * @copyright  Copyright 2011-2016 Stefan Liden
  * @license    MIT
  */
@@ -56,7 +56,9 @@
                 'detail': {
                     'clientX': event.clientX,
                     'clientY': event.clientY
-                }
+                },
+                cancelable: true,
+                bubbles: true
             });
         }
         // Old browsers
@@ -74,10 +76,10 @@
         nrOfFingers = isTouch ? event.touches.length : 1,
         startX, startY;
     var hasMoved = false;
-        
+
     // Prevent panning and zooming (IE)
     if (event.preventManipulation) event.preventManipulation();
-    
+
     // See blog.msdn.com/b/ie/20111/10/19/handling-multi-touch-and-mouse-input-in-all-browsers.aspx
     if (typeof event.target.style.msTouchAction !== 'undefined') event.target.style.msTouchAction = 'none';
 
@@ -102,7 +104,7 @@
           swipeEvent = 'swipe',
           endTime = new Date().getTime(),
           timeDiff = endTime - startTime;
-          
+
       // Fix for IE always triggering onMove and not to count very small moves
       if (hasMoved) {
         endX = changed.clientX;
@@ -141,7 +143,7 @@
             dirY = diffY > 0 ? 'down' : 'up';
             absDiffX = Math.abs(diffX);
             absDiffY = Math.abs(diffY);
-            
+
             // If moving finger far, it's not a swipe
             if (absDiffX < 40 || absDiffY < 40) {
               if (absDiffX >= absDiffY) {
@@ -150,7 +152,7 @@
               else {
                 swipeEvent += dirY;
               }
-            
+
                 dispatchEvent(ele, swipeEvent, e);
             }
           }
@@ -185,10 +187,12 @@
   }
 
   d.addEventListener(evts.start, onStart, false);
-  
+
   // Deprecated.
   function stop(e) {
-    e.stopPropagation();
+    if (e && e.bubbles) {
+      e.stopPropagation();
+    }
   }
 
   // Return an object to access useful properties and methods
