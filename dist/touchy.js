@@ -148,7 +148,7 @@ require.register("touchy", function (exports, module) {
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.3.1
+ * @version    1.4.0
  * @copyright  Copyright 2011-2016 Stefan Liden
  * @license    MIT
  */
@@ -258,23 +258,36 @@ require.register("touchy", function (exports, module) {
         }
       }
 
-      if (nrOfFingers === 1) {
-        if (!hasMoved) {
+      // Taps
+      if (!hasMoved) {
+        if (nrOfFingers === 1) {
           if (timeDiff <= 500) {
-            if (doubleTap) {
-                dispatchEvent(ele, 'doubleTap', e);
-            }
-            else {
-                dispatchEvent(ele, 'tap', e);
-              doubleTap = true;
-            }
-            resetDoubleTap();
+              if (doubleTap) {
+                  dispatchEvent(ele, 'doubleTap', e);
+              }
+              else {
+                  dispatchEvent(ele, 'tap', e);
+                  doubleTap = true;
+              }
+              resetDoubleTap();
           }
           else {
               dispatchEvent(ele, 'longTouch', e);
           }
         }
-        else {
+        if (nrOfFingers === 2) {
+          dispatchEvent(ele, 'twoFingerTap', e);
+        }
+        else if (nrOfFingers === 3) {
+          dispatchEvent(ele, 'threeFingerTap', e);
+        }
+        else if (nrOfFingers === 4) {
+          dispatchEvent(ele, 'fourFingerTap', e);
+        }
+      }
+      // Swipes
+      else {
+        if (nrOfFingers === 1) {
           if (timeDiff < 300) {
             endX = endX || changed.clientX;
             endY = endY || changed.clientY;
@@ -294,28 +307,27 @@ require.register("touchy", function (exports, module) {
                 swipeEvent += dirY;
               }
 
-                dispatchEvent(ele, swipeEvent, e);
+              dispatchEvent(ele, swipeEvent, e);
             }
           }
           else {
-              dispatchEvent(ele, 'drop', e);
+            dispatchEvent(ele, 'drop', e);
           }
         }
-      }
-      else if (!hasMoved) {
+        // Simple multifinger swipes. No direction indicated
         if (nrOfFingers === 2) {
-            dispatchEvent(ele, 'twoFingerTap', e);
+          dispatchEvent(ele, 'twoFingerSwipe', e);
         }
         else if (nrOfFingers === 3) {
-            dispatchEvent(ele, 'threeFingerTap', e);
+          dispatchEvent(ele, 'threeFingerSwipe', e);
         }
         else if (nrOfFingers === 4) {
-            dispatchEvent(ele, 'fourFingerTap', e);
+          dispatchEvent(ele, 'fourFingerSwipe', e);
         }
-      }
-      // Event indicating gesture. Use hammer.js for gesture events
-      else {
-          dispatchEvent(ele, 'gesture', e);
+        // Event indicating other gesture. Use hammer.js for gesture events
+        else {
+            dispatchEvent(ele, 'gesture', e);
+        }
       }
 
       d.removeEventListener(evts.move, onMove, false);
