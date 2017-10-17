@@ -7,7 +7,7 @@
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.4.0
+ * @version    1.4.1
  * @copyright  Copyright 2011-2016 Stefan Liden
  * @license    MIT
  */
@@ -48,31 +48,32 @@
   }
 
   // Dispatch new event
-    function dispatchEvent (target, eventName, event) {
-        var evt;
-        // Modern browsers
-        if (window.CustomEvent) {
-            evt = new CustomEvent(eventName, {
-                'detail': {
-                    'clientX': event.clientX,
-                    'clientY': event.clientY
-                },
-                cancelable: true,
-                bubbles: true
-            });
-        }
-        // Old browsers
-        else {
-            evt = d.createEvent('MouseEvent');
-            evt.initEvent(eventName, true, true);
-        }
+  function dispatchEvent (target, eventName, event) {
+    var evt,
+        touch = isTouch ? event.changedTouches[0] : event;
+    // Modern browsers
+    if (window.CustomEvent) {
+      evt = new CustomEvent(eventName, {
+            'detail': {
+              'clientX': touch.clientX,
+              'clientY': touch.clientY
+             },
+             cancelable: true,
+             bubbles: true
+      });
+    }
+    // Old browsers
+    else {
+      evt = d.createEvent('MouseEvent');
+      evt.initEvent(eventName, true, true);
+    }
 
-        target.dispatchEvent(evt);
+    target.dispatchEvent(evt);
   }
 
   function onStart (event) {
     var startTime = new Date().getTime(),
-        touch = isTouch ? event.touches[0] : event,
+        touch = isTouch ? event.changedTouches[0] : event,
         nrOfFingers = isTouch ? event.touches.length : 1,
         startX, startY;
     var hasMoved = false;
