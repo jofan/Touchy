@@ -8,11 +8,6 @@ touchy.js has no dependencies.
 
 ## Install
 
-### Component
-```
-  component install jofan/touchy
-```
-
 ### Bower
 ```
   bower install Touchy
@@ -30,7 +25,7 @@ See [Touchy documentation and example](http://jofan.github.com/Touchy/)
 ##License
 (The MIT License)
 
-Copyright (c) 2011-2016 Stefan Liden <stefan@jofanmedia.com>
+Copyright (c) 2011-2018 Stefan Liden <stefan@jofanmedia.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

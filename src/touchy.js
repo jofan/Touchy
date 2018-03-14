@@ -7,7 +7,7 @@
  * BROWSER SUPPORT: Safari, Chrome, Firefox, IE9, iOS4+, Android 4+
  *
  * @author     Stefan Liden
- * @version    1.4.1
+ * @version    1.4.2
  * @copyright  Copyright 2011-2016 Stefan Liden
  * @license    MIT
  */
@@ -48,35 +48,52 @@
   }
 
   // Dispatch new event
+  // Chrome (61.0.3163.100) does not have an object at event.touches[0] for most events!
   function dispatchEvent (target, eventName, event) {
     var evt,
-        touch = isTouch ? event.changedTouches[0] : event;
+        touch = event;
+    // Modern mobile browsers
+    if (event.changedTouches) {
+      touch = event.changedTouches[0];
+    }
+    // IE less than Edge
+    else if (event.touches) {
+      touch = event.touches[0];
+    }
     // Modern browsers
-    if (window.CustomEvent) {
-      evt = new CustomEvent(eventName, {
-            'detail': {
-              'clientX': touch.clientX,
-              'clientY': touch.clientY
-             },
-             cancelable: true,
-             bubbles: true
-      });
-    }
-    // Old browsers
-    else {
-      evt = d.createEvent('MouseEvent');
-      evt.initEvent(eventName, true, true);
-    }
-
-    target.dispatchEvent(evt);
+    // try/catch is a Windows fix
+    // https://github.com/davidtheclark/tap.js/commit/9d7638913be497278e173a4b14bea40f3891dbbd
+	  try {
+		  evt = new CustomEvent(eventName, {
+			  'detail': {
+				  'clientX': touch.clientX,
+				  'clientY': touch.clientY
+			  },
+			  cancelable: true,
+			  bubbles: true
+		  });
+    } catch (e) {
+		  evt = document.createEvent('MouseEvent');
+		  evt.initEvent(eventName, true, true);
+	  }
+	  target.dispatchEvent(evt);
   }
 
   function onStart (event) {
     var startTime = new Date().getTime(),
-        touch = isTouch ? event.changedTouches[0] : event,
+        touch = event,
         nrOfFingers = isTouch ? event.touches.length : 1,
         startX, startY;
     var hasMoved = false;
+
+    // Modern mobile browsers
+    if (event.changedTouches) {
+        touch = event.changedTouches[0];
+    }
+    // IE less than Edge
+    else if (event.touches) {
+        touch = event.touches[0];
+    }
 
     // Prevent panning and zooming (IE)
     if (event.preventManipulation) event.preventManipulation();
@@ -101,10 +118,20 @@
     function onEnd (e) {
       var endX, endY, diffX, diffY, dirX, dirY, absDiffX, absDiffY,
           ele = e.target,
-          changed = isTouch ? e.changedTouches[0] : e,
+          changed = e,
           swipeEvent = 'swipe',
           endTime = new Date().getTime(),
           timeDiff = endTime - startTime;
+
+
+      // Modern mobile browsers
+      if (e.changedTouches) {
+          changed = e.changedTouches[0];
+      }
+      // IE less than Edge
+      else if (e.touches) {
+          changed = e.touches[0];
+      }
 
       // Fix for IE always triggering onMove and not to count very small moves
       if (hasMoved) {
@@ -148,7 +175,7 @@
       // Swipes
       else {
         if (nrOfFingers === 1) {
-          if (timeDiff < 300) {
+          if (timeDiff < 500) {
             endX = endX || changed.clientX;
             endY = endY || changed.clientY;
             diffX = diffX || endX-startX;
@@ -159,7 +186,7 @@
             absDiffY = Math.abs(diffY);
 
             // If moving finger far, it's not a swipe
-            if (absDiffX < 40 || absDiffY < 40) {
+            if (absDiffX < 100 || absDiffY < 100) {
               if (absDiffX >= absDiffY) {
                 swipeEvent += dirX;
               }
