@@ -97,7 +97,6 @@
   }
 
   function onStart (event) {
-    console.log(event);
     var isTouchEvent = event.type === 'touchstart' ? true : false;
     var startTime = new Date().getTime(),
         touch = event,
@@ -123,7 +122,6 @@
     startX = touch.clientX;
     startY = touch.clientY;
 
-    // console.log('Evts', evts);
     d.addEventListener(evts.move, onMove, false);
     d.addEventListener(evts.end, onEnd, false);
 

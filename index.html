@@ -80,12 +80,13 @@
             <p>Touchy comes with the following API:</p>
             <dl>
                 <dt><code>touchy.events</code></dt>
-                <dd>Object with the current event names touchy is listening on, e.g. 'touchstart'</dd>
+                <dd>Object with the current event names touchy using, e.g. 'touchstart'</dd>
                 <dt><code>touchy.isTouch</code></dt>
-                <dd>True if global has 'ontouchstart'</dd>
-                <dt><code>touchy.stop(event)</code></dt>
-                <dd>DEPRECATED. Use event.stopPropagation() as normal</dd>
+                <dd>[DEPRECATED] True if global has 'ontouchstart'</dd>
+                <dt><code>touchy.hasTouch</code></dt>
+                <dd>If browser has touch events or not</dd>
             </dl>
+
 
             <h2>Example</h2>
             <h4>Tap, hold (longtouch), drag or swipe the area below</h4>
@@ -136,7 +137,7 @@
              };
 
              function dragged(e) {
-                 console.log(e.detail.clientX, e.detail.clientY);
+                 // console.log(e.detail.clientX, e.detail.clientY);
                  result.innerHTML = '<h3>You dragged!</h3>';
              };
 
